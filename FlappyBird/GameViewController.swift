@@ -6,6 +6,8 @@
 //  Copyright (c) 2014 Fullstack.io. All rights reserved.
 //
 
+import Foundation
+import GoogleMobileAds
 import UIKit
 import SpriteKit
 
@@ -30,6 +32,29 @@ extension SKNode {
 }
 
 class GameViewController: UIViewController {
+    
+    var bannerView: GADBannerView!
+
+    func addBannerViewToView(_ bannerView: GADBannerView) {
+      bannerView.translatesAutoresizingMaskIntoConstraints = false
+      view.addSubview(bannerView)
+      view.addConstraints(
+        [NSLayoutConstraint(item: bannerView,
+                            attribute: .bottom,
+                            relatedBy: .equal,
+                            toItem: bottomLayoutGuide,
+                            attribute: .top,
+                            multiplier: 1,
+                            constant: 0),
+         NSLayoutConstraint(item: bannerView,
+                            attribute: .centerX,
+                            relatedBy: .equal,
+                            toItem: view,
+                            attribute: .centerX,
+                            multiplier: 1,
+                            constant: 0)
+        ])
+     }
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -48,6 +73,15 @@ class GameViewController: UIViewController {
             
             skView.presentScene(scene)
         }
+        
+        // In this case, we instantiate the banner with desired ad size.
+        bannerView = GADBannerView(adSize: kGADAdSizeBanner)
+
+        addBannerViewToView(bannerView)
+        
+        bannerView.adUnitID = "ca-app-pub-3940256099942544/2934735716"
+        bannerView.rootViewController = self
+        bannerView.load(GADRequest())
     }
 
     override var shouldAutorotate : Bool {
